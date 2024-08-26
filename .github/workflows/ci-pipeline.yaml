@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
 
 
-# permissions:
-#   contents: write
-#   security-events: write
-
+permissions:
+  contents: write
+  security-events: write
+  
 jobs:
   # Checkout_and_Code_Scan:
   #   runs-on: ubuntu-20.04
