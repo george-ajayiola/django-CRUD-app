@@ -3,9 +3,9 @@ name: Django CI
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
-  security-events: write
+# permissions:
+#   contents: write
+#   security-events: write
 
 jobs:
   # Checkout_and_Code_Scan:
