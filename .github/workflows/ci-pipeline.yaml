@@ -1,8 +1,7 @@
 name: Django CI
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 
 # permissions:
@@ -128,9 +127,9 @@ jobs:
   #         echo "After modification:"
   #         cat deployment.yaml
          
-          git add .
-          git commit -m "Update image tag in K8s manifest to v1.0.${{ github.run_number }}"
-          git push origin main
-        env:
-          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.GIT_TOKEN }}
+        #   git add .
+        #   git commit -m "Update image tag in K8s manifest to v1.0.${{ github.run_number }}"
+        #   git push origin main
+        # env:
+        #   GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+        #   GIT_PASSWORD: ${{ secrets.GIT_TOKEN }}
