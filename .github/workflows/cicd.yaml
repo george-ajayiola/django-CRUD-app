@@ -95,36 +95,36 @@ jobs:
           push: true
           
 
-  modify_image_tag_in_K8s_repo:
-    needs: Build_and_Scan_docker_image
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          repository: '${{ secrets.GIT_USERNAME }}/django-CRUD-app-K8s'
-          token: ${{ secrets.GIT_TOKEN }}
+  # modify_image_tag_in_K8s_repo:
+  #   needs: Build_and_Scan_docker_image
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         repository: '${{ secrets.GIT_USERNAME }}/django-CRUD-app-K8s'
+  #         token: ${{ secrets.GIT_TOKEN }}
       
 
-      - name: Modifying the k8s manifest in git repo
-        run: |
-          git config user.email "${{ secrets.GIT_EMAIL }}"
-          git config user.name "${{ secrets.GIT_USERNAME }}"
-          echo "Working Directory: $(pwd)"
+  #     - name: Modifying the k8s manifest in git repo
+  #       run: |
+  #         git config user.email "${{ secrets.GIT_EMAIL }}"
+  #         git config user.name "${{ secrets.GIT_USERNAME }}"
+  #         echo "Working Directory: $(pwd)"
        
-          # Navigate to the specific k8s directory
+  #         # Navigate to the specific k8s directory
       
-          cd k8s
+  #         cd k8s
          
-          # Print deploymennt.yaml for debugging before changes
-          echo "Before modification: "
-          cat deployment.yaml
+  #         # Print deploymennt.yaml for debugging before changes
+  #         echo "Before modification: "
+  #         cat deployment.yaml
          
-          sed -i "s|image: ${{ secrets.DOCKERHUB_USERNAME }}/django-app:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/django-app:v1.0.${{ github.run_number }}|g" deployment.yaml
+  #         sed -i "s|image: ${{ secrets.DOCKERHUB_USERNAME }}/django-app:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/django-app:v1.0.${{ github.run_number }}|g" deployment.yaml
          
-          # Print deployment.yaml for debugging after changes
-          echo "After modification:"
-          cat deployment.yaml
+  #         # Print deployment.yaml for debugging after changes
+  #         echo "After modification:"
+  #         cat deployment.yaml
          
           git add .
           git commit -m "Update image tag in K8s manifest to v1.0.${{ github.run_number }}"
