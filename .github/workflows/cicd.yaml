@@ -3,6 +3,10 @@ name: Django CI
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  security-events: write
+
 jobs:
   # Checkout_and_Code_Scan:
   #   runs-on: ubuntu-20.04
@@ -70,11 +74,18 @@ jobs:
         uses: aquasecurity/trivy-action@0.20.0
         with:
           image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/django-app:v1.0.${{ github.run_number }}'
-          format: 'table'
           exit-code: '0'
           ignore-unfixed: true
           vuln-type: 'os,library'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
           severity: 'CRITICAL'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
 
       - name: Push docker image
         uses: docker/build-push-action@v6
@@ -84,7 +95,7 @@ jobs:
           push: true
           
 
-  modify_image_tag:
+  modify_image_tag_in_K8s_repo:
     needs: Build_and_Scan_docker_image
     runs-on: ubuntu-latest
     steps:
@@ -105,18 +116,18 @@ jobs:
       
           cd k8s
          
-          # Print values.yaml for debugging before changes
+          # Print deploymennt.yaml for debugging before changes
           echo "Before modification: "
           cat deployment.yaml
          
           sed -i "s|image: ${{ secrets.DOCKERHUB_USERNAME }}/django-app:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/django-app:v1.0.${{ github.run_number }}|g" deployment.yaml
          
-          # Print values.yaml for debugging after changes
+          # Print deployment.yaml for debugging after changes
           echo "After modification:"
           cat deployment.yaml
          
           git add .
-          git commit -m "Update image tag by Github Actions Job change manifest: ${{ github.run_number }}"
+          git commit -m "Update image tag in K8s manifest to v1.0.${{ github.run_number }}"
           git push origin main
         env:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
