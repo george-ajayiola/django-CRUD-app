@@ -46,7 +46,7 @@ jobs:
       
   Build_and_Scan_docker_image:
     runs-on: ubuntu-20.04
-    # needs: Checkout_and_Code_Scan
+    needs: Checkout_and_Scan_Code
     steps:
       - uses: actions/checkout@v4
       - name: Login to Docker Hub
